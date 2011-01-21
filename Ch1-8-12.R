@@ -49,25 +49,26 @@ attach(EPIDURALf)
 length(EPIDURALf[Treatment == "Hamstring Stretch", 1])
 #
 # b
-total_ham_stretch <- length(EPIDURALf[Treatment == "Hamstring Stretch",1])
-# Proportion of hamstring stretch that were easy
-easy <- length(EPIDURALf[Treatment == "Hamstring Stretch" & Ease == "Easy",1])
-easy/total_ham_stretch
-# Proportion of hamstring stretch that were difficult
-difficult <- length(EPIDURALf[Treatment == "Hamstring Stretch" & Ease == "Difficult",1])
-difficult/total_ham_stretch
-# Proportion of hamstring stretch that were impossible
-impossible <- length(EPIDURALf[Treatment == "Hamstring Stretch" & Ease == "Impossible",1])
-impossible/total_ham_stretch
-
-# OR A, B, C all in one table
-TE <- table(Treatment, Ease)
-TE[Treatment == "Traditional Sitting",1]
+THS <- table(Treatment, Ease)
+# Proportion of hamstring stretch for each "Ease" level
+prop.table(THS, 1)[1,]
 #
 # c
-total_easy <- length(EPIDURALf[Ease == "Easy", 1])
-trad_sit <- length(EPIDURALf[Ease == "Easy" & Treatment == "Traditional Sitting",1])
-# Proportion of easy that had traditional sitting  
-trad_sit/total_easy 
+# Proportion of "Easy" that did "Traditional Sitting"
+prop.table(THS, 2)[2,2]
 #
 # d
+# I am assuming by "mean weight" the books means "kg"
+tapply(kg, list(Ease, Treatment), mean)
+#
+# e
+get_bmi <- function (weight, dist){
+	weight/(dist/100)^2
+}
+EPIDURALf[Ease == "Easy" & get_bmi(kg, cm) < 25,]
+
+######
+# 10
+######
+#
+# a 
