@@ -1,0 +1,14 @@
+% 
+\documentclass[a4paper]{article}
+\usepackage[OT1]{fontenc}
+\usepackage{Sweave}
+\begin{document}
+
+\title{3850 Fun}
+\author{Robert Bost}
+
+\maketitle
+
+
+
+\end{document}
