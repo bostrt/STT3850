@@ -72,3 +72,44 @@ EPIDURALf[Ease == "Easy" & get_bmi(kg, cm) < 25,]
 ######
 #
 # a 
+tourists <- matrix(c(9.303,9.536,9.918,7.959,7.736,8.875,15.224,15.629,16.090,0.905,0.894,0.883,17.463,18.635,20.148), ncol=3, byrow=TRUE)
+rownames(tourists) <- c("Germany", "France", "Great Britain", "USA", "Rest of the world")
+colnames(tourists) <- c(2003, 2004, 2005)
+tourists
+#
+# b
+margin.table(tourists,1)
+#
+# c
+margin.table(tourists,2)
+
+######
+# 11 
+######
+conv <- function(){
+	for(i in seq(18, 28, 2)){
+		print((9/5)*i+32)
+	}	
+}
+conv()
+
+######
+# 12 
+######
+# Kilometers to miles.
+km2m <- function(km){
+	.6214*km
+}
+km2m(10.2)
+
+# Hectare to acre.
+ha2a <- function(ha){
+	2.471*ha
+}
+ha2a(22.4)
+
+# Liter to gallon.
+l2g <- function(l){
+	0.22*l
+}
+l2g(13.5)
