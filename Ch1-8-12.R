@@ -2,6 +2,8 @@
 # Jan 20, 2011
 # 
 # Author: Robert Bost
+# Author: Jeff Schauble
+# Author: Nick Galloway
 ###############################################################################
 # Chapter 1 
 # Problems 8 through 12

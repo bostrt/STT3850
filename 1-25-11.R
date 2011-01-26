@@ -93,3 +93,4 @@ myMedian <- function(x){
 		mean(twomiddle)
 	}
 }
+myMedian(c(1, 11))
