@@ -48,3 +48,63 @@ medianOneBath <- median(apts[apts$toilets == 1,]$totalprice) # Median total pric
 medianTwoBath <- median(apts[apts$toilets == 2,]$totalprice) # Median total price of 2 bathroom apt.
 (medianTwoBath - medianOneBath)/medianAll
 # Nah, I probably wouldn't pay for extra bath. 35% more.
+
+
+######
+# 6
+######
+site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
+BABIES <- read.table(file=url(site), header=TRUE)
+attach(BABIES)
+head(BABIES)
+#
+# a
+CLEAN <- BABIES[bwt != 999 & gestation != 999 & parity != 9 & height != 99 & weight != 999 & smoke != 9,]
+#
+# b
+attach(CLEAN)
+par(mfrow=c(1,2))
+hist(CLEAN[smoke == 0,]$bwt, freq=FALSE,
+     main="Non-smoker", 
+	 xlab="Birth Weight (oz)", col="#8888ee", xlim=c(30, 180))
+lines(density(CLEAN[smoke == 0,]$bwt))
+hist(CLEAN[smoke == 1,]$bwt, freq=FALSE,
+		main="Smoker", 
+		xlab="Birth Weight (oz)", col="#ee8888", , xlim=c(30, 180))
+lines(density(CLEAN[smoke == 1,]$bwt))
+#
+# c
+# The smoking mothers distribution is closer to a normal curve than
+# the non-smoking mothers distribution. Non-smoking mothers are skewed 
+# to the left, tend to have higher baby weight.
+
+#
+# d
+meanSmokeWeight <- mean(CLEAN[smoke==1,]$bwt)
+meanNoSmokeWeight <- mean(CLEAN[smoke==0,]$bwt)
+meanNoSmokeWeight - meanSmokeWeight
+# Difference of ~9 oz.
+# Using mean for measuring center of non-smokers may be a problem
+# because distribution is slightly skewed to left.
+# If you use median for non-smoking moms you get a lower difference.
+
+#
+# e
+library("lattice")
+boxplot(bwt~smoke, names=c("Non-smoker", "Smoker"), col=c("#8888ee", "#ee8888"), ylab="Weight (oz)")
+bwplot(smoke~bwt, ylab=c("Non-smoker", "Smoker"), col=c("#8888ee", "#ee8888"), xlab="Weight (oz)")
+
+#
+# f
+medFirst <- median(CLEAN[parity == 0,]$bwt)
+medNoFirst <- median(CLEAN[parity != 0,]$bwt)
+medFirst - medNoFirst
+# Firts born children tend to weight more by 2 oz.
+
+#
+# g
+par(mfrow=c(1,2))
+#histogram(~weight|smoke, type="density")
+hist(CLEAN[smoke == 0,]$weight, col="#8888ee", main="Non-smoking momma weight", xlab="lbs.", freq=FALSE)
+hist(CLEAN[smoke == 1,]$weight, col="#ee8888", main="Smoking momma weight", xlab="lbs.", freq=FALSE)
+legend("topright", legend=c("Non-smoker", "Smoker"), lty=1, col=c("#8888ee", "#ee8888"))
