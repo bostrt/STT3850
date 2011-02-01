@@ -53,6 +53,7 @@ medianTwoBath <- median(apts[apts$toilets == 2,]$totalprice) # Median total pric
 ######
 # 6
 ######
+detach(vit2005)
 site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
 BABIES <- read.table(file=url(site), header=TRUE)
 attach(BABIES)
@@ -62,6 +63,7 @@ head(BABIES)
 CLEAN <- BABIES[bwt != 999 & gestation != 999 & parity != 9 & height != 99 & weight != 999 & smoke != 9,]
 #
 # b
+detach(BABIES)
 attach(CLEAN)
 par(mfrow=c(1,2))
 hist(CLEAN[smoke == 0,]$bwt, freq=FALSE,
@@ -105,6 +107,32 @@ medFirst - medNoFirst
 # g
 par(mfrow=c(1,2))
 #histogram(~weight|smoke, type="density")
-hist(CLEAN[smoke == 0,]$weight, col="#8888ee", main="Non-smoking momma weight", xlab="lbs.", freq=FALSE)
-hist(CLEAN[smoke == 1,]$weight, col="#ee8888", main="Smoking momma weight", xlab="lbs.", freq=FALSE)
-legend("topright", legend=c("Non-smoker", "Smoker"), lty=1, col=c("#8888ee", "#ee8888"))
+plot(density(CLEAN[smoke == 0,]$weight), col="#8888ee", xlab="lbs.", main="Non-smoke")
+plot(density(CLEAN[smoke == 1,]$weight), col="#ee8888", xlab="lbs.", main="Smoke")
+legend("top", legend=c("Non-smoker", "Smoker"), lty=1, col=c("#8888ee", "#ee8888"))
+#
+# h
+densityplot(~weight, groups=smoke)
+# Mothers that smoke tend to weigh less. Their distribution skews right.
+
+#
+# i
+meanSmoke <- mean(CLEAN[smoke == 1,]$weight)
+meanNoSmoke <- mean(CLEAN[smoke == 0,]$weight)
+abs(meanSmoke - meanNoSmoke)
+# Both distributions, smoking and non-smoking, are skewed to right.
+
+#
+# j
+get_bmi <- function(weight, height){
+	(weight*0.45359)/((height*0.0254)^2)
+}
+CLEANP <- get_bmi(CLEAN$weight, CLEAN$height)
+densityplot(CLEANP)
+
+#
+# k 
+# Distribution is skewed right.
+
+#
+# l
