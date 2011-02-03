@@ -54,10 +54,12 @@ medianTwoBath <- median(apts[apts$toilets == 2,]$totalprice) # Median total pric
 # 6
 ######
 detach(vit2005)
-site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
-BABIES <- read.table(file=url(site), header=TRUE)
-attach(BABIES)
-head(BABIES)
+loadBabies <- function(){
+	site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
+	BABIES <- read.table(file=url(site), header=TRUE)
+	attach(BABIES)
+	head(BABIES)
+}
 #
 # a
 CLEAN <- BABIES[bwt != 999 & gestation != 999 & parity != 9 & height != 99 & weight != 999 & smoke != 9,]
@@ -74,11 +76,11 @@ hist(CLEAN[smoke == 1,]$bwt, freq=FALSE,
 		main="Smoker", 
 		xlab="Birth Weight (oz)", col="#ee8888", , xlim=c(30, 180))
 lines(density(CLEAN[smoke == 1,]$bwt))
+densityplot(~bwt,groups=smoke) # this helps us compare the curves better
 #
 # c
-# The smoking mothers distribution is closer to a normal curve than
-# the non-smoking mothers distribution. Non-smoking mothers are skewed 
-# to the left, tend to have higher baby weight.
+# Mothers that smoke tend to have babies with slightly lower weight.
+# Mothers that do not smoke have a mostly normal curve.
 
 #
 # d
@@ -105,15 +107,12 @@ medFirst - medNoFirst
 
 #
 # g
-par(mfrow=c(1,2))
-#histogram(~weight|smoke, type="density")
-plot(density(CLEAN[smoke == 0,]$weight), col="#8888ee", xlab="lbs.", main="Non-smoke")
-plot(density(CLEAN[smoke == 1,]$weight), col="#ee8888", xlab="lbs.", main="Smoke")
-legend("top", legend=c("Non-smoker", "Smoker"), lty=1, col=c("#8888ee", "#ee8888"))
+densityplot(~weight, groups=smoke, auto.key=TRUE)
+
 #
 # h
-densityplot(~weight, groups=smoke)
 # Mothers that smoke tend to weigh less. Their distribution skews right.
+tapply(CLEAN$weight,smoke, median)
 
 #
 # i
@@ -127,12 +126,38 @@ abs(meanSmoke - meanNoSmoke)
 get_bmi <- function(weight, height){
 	(weight*0.45359)/((height*0.0254)^2)
 }
-CLEANP <- get_bmi(CLEAN$weight, CLEAN$height)
-densityplot(CLEANP)
+CLEANP <- CLEAN
+CLEANP <- cbind(CLEANP, "BWI"=get_bmi(CLEAN$weight, CLEAN$height))
+CLEANP <- cbind(CLEANP, "weightM"=(CLEAN$weight)*0.45359)
+CLEANP <- cbind(CLEANP, "heightM"=((CLEAN$height)*0.0254)^2)
 
 #
-# k 
+# k
+densityplot(CLEANP$BWI)
 # Distribution is skewed right.
+median(CLEANP$BWI)
+IQR(CLEANP$BWI)
 
 #
 # l
+values <- quantile(CLEANP$BWI)
+CLEANPa <- cbind(CLEANP, Q=cut(CLEANP$BWI, values, order_results=TRUE))
+with(CLEANPa, tapply(bwt, list(Q, smoke), mean))
+with(CLEANPa, tapply(bwt, list(Q, smoke), sd))
+with(CLEANPa, tapply(bwt, list(Q, smoke), median))
+with(CLEANPa, tapply(bwt, list(Q, smoke), IQR))
+# bwt conditioned on BWI quartiles. These graphs are 
+# mostly Symmetrical.
+densityplot(~CLEANPa$bwt|CLEANPa$Q)
+histogram(~CLEANPa$bwt|CLEANPa$Q)
+# bwt conditioned on smoking
+densityplot(~CLEANPa$bwt|CLEANPa$smoke, groups=smoke, auto.key=TRUE)
+histogram(~CLEANPa$bwt|CLEANPa$smoke)
+
+#
+# m
+bwplot(CLEANPa$smoke~CLEANPa$bwt|CLEANPa$Q)
+
+
+
+
