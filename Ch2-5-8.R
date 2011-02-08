@@ -158,6 +158,111 @@ histogram(~CLEANPa$bwt|CLEANPa$smoke)
 # m
 bwplot(CLEANPa$smoke~CLEANPa$bwt|CLEANPa$Q)
 
+#
+# n
+xyplot(CLEANPa$bwt~CLEANPa$BWI|CLEANPa$Q, groups=CLEANPa$smoke, auto.key=TRUE)
+# I decided to use the groups parameter in the function instead of doing bwt~BWI|Q*smoke.
+# I can read this much easier than the many plots that the other formula produces.
+# There is not visible relationship between BWI and bwt.
+
+#
+# o
+with(CLEANPa, tapply(gestation, list(Q, smoke), mean))
+with(CLEANPa, tapply(gestation, list(Q, smoke), sd))
+with(CLEANPa, tapply(gestation, list(Q, smoke), median))
+with(CLEANPa, tapply(gestation, list(Q, smoke), IQR))
+# gestation conditioned on BWI quartiles. These graphs are 
+# mostly Symmetrical.
+densityplot(~CLEANPa$gestation|CLEANPa$Q)
+histogram(~CLEANPa$bwt|CLEANPa$Q)
+# gestation conditioned on smoking
+densityplot(~CLEANPa$gestation|CLEANPa$smoke, groups=smoke, auto.key=TRUE)
+histogram(~CLEANPa$bwt|CLEANPa$smoke)
+bwplot(CLEANPa$smoke~CLEANPa$gestation|CLEANPa$Q)
+xyplot(CLEANPa$gestation~CLEANPa$BWI|CLEANPa$Q, groups=CLEANPa$smoke, auto.key=TRUE)
+
+#
+# p
+xyplot(CLEANPa$bwt~CLEANPa$gestation|CLEANPa$Q*CLEANPa$smoke,
+		panel=function(x, y)
+		{
+			panel.xyplot(x, y)
+			panel.abline(lm(y~x))
+			panel.abline(lqs(y~x), col=3, lty=2)
+			panel.abline(rlm(y~x), col=6, lty=3)
+		})
+# TODO: Examine graph
+
+#
+# q
 
 
+######
+# 7
+######
+library(PASWR)
+detach(CLEAN)
+attach(titanic3)
 
+#
+# a
+tapply(titanic3$survived, titanic3$pclass, mean)
+
+#
+# b
+tapply(survived, list(pclass, sex), mean)
+
+#
+# c
+densityplot(titanic3$age)
+# Density plot is slighty skewed to right.
+mean(titanic3[!is.na(age),]$age)
+median(titanic3[!is.na(age),]$age)
+IQR(titanic3[!is.na(age),]$age)
+
+#
+# d
+mean(titanic3[!is.na(age) & sex == 'female' & survived == 1,]$age)
+mean(titanic3[!is.na(age) & sex == 'female' & survived == 0,]$age)
+median(titanic3[!is.na(age) & sex == 'female' & survived == 1,]$age)
+median(titanic3[!is.na(age) & sex == 'female' & survived == 0,]$age)
+# More older females survived.
+range(titanic3[!is.na(age) & sex == 'female' & survived == 1,]$age)
+range(titanic3[!is.na(age) & sex == 'female' & survived == 0,]$age)
+
+#
+# e
+mean(titanic3[!is.na(age) & sex == 'male' & survived == 1,]$age)
+mean(titanic3[!is.na(age) & sex == 'male' & survived == 0,]$age)
+median(titanic3[!is.na(age) & sex == 'male' & survived == 1,]$age)
+median(titanic3[!is.na(age) & sex == 'male' & survived == 0,]$age)
+# More younger males survived.
+range(titanic3[!is.na(age) & sex == 'male' & survived == 1,]$age)
+range(titanic3[!is.na(age) & sex == 'male' & survived == 0,]$age)
+
+#
+# f
+min(titanic3[survived == 1 & sex == 'female' & !is.na(age), ]$age)
+
+#
+# g
+# I definitely see an issue with class warfare from the results
+# in (a). Only a quarter of 3rd class passengers survived compared 
+# to more than half of 1st class passengers.
+# Though there were a little less than twice as many 3rd class
+# passengers than 1st or 2nd.
+# 
+values <- quantile(titanic3[!is.na(age),]$age)
+CLEANt <- cbind(titanic3[!is.na(age), 0:14], Q=cut(titanic3[!is.na(age),]$age, values, ordered_results=TRUE))
+detach(titanic3)
+attach(CLEANt)
+densityplot(~Q|sex, groups=survived , auto.key=TRUE)
+densityplot(~pclass, groups=survived, auto.key=TRUE)
+
+
+######
+# 8
+######
+
+#
+# a
