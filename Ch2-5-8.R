@@ -263,6 +263,70 @@ densityplot(~pclass, groups=survived, auto.key=TRUE)
 ######
 # 8
 ######
-
+detach(CLEANt)
+detach(Cars2004EU)
+library(PASWR)
+attach(Cars2004EU)
+str(Cars2004EU)
 #
 # a
+total.cars <- (Cars2004EU$cars*population)/1000
+total.cars
+death.rate <- deaths/(cars*population)
+death.rate
+#
+# b
+
+
+#
+# c
+CARSd <- cbind(Cars2004EU, death.rate)
+with(CARSd, CARSd[death.rate == min(CARSd$death.rate),])
+
+#
+# d
+xyplot(population~total.cars)
+# Average number of cars is around 400 per 1000 inhabitants.
+
+#
+# e
+xyplot(population~total.cars, panel=function(x, y){
+		panel.xyplot(x, y)
+		panel.abline(lm(y~x))			
+		})
+
+# Plot show that population goes up so does cars per 1000 inhabitants.
+lm(total.cars~population)
+0.5172^-1 # is inverted
+# y = mx+b
+1.933488*19224.630+(-864.6413)
+Cars2004EU[cars*(population/1000) == 19224.630,]
+# Spain is it
+
+#
+# f
+xyplot(total.cars~death.rate)
+# No relationship....?
+
+#
+# g
+cor(total.cars, death.rate, method="spearman")
+# It's measuring the trend of the curve. The number is close to
+# negative one so total.cars and death.rate have a close 
+# relationship.
+
+#
+# h
+plot(log(total.cars), log(death.rate))
+
+#
+# i
+xyplot(log(total.cars)~log(death.rate), panel=function(x, y){
+			panel.xyplot(x, y)
+			panel.abline(lm(y~x))			
+		})
+lm(log(death.rate)~log(total.cars))
+# y = mx + b
+(-1.050^-1)*9.863948+(-1.883)
+
+# ask about 8
