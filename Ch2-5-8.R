@@ -2,6 +2,8 @@
 # Jan 29, 2011
 # 
 # Author: Robert Bost
+# Author: Jeff Schauble
+# Author: Nick Galloway
 ###############################################################################
 # Chapter 2
 # Problems 5-8
@@ -54,12 +56,10 @@ medianTwoBath <- median(apts[apts$toilets == 2,]$totalprice) # Median total pric
 # 6
 ######
 detach(vit2005)
-loadBabies <- function(){
-	site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
-	BABIES <- read.table(file=url(site), header=TRUE)
-	attach(BABIES)
-	head(BABIES)
-}
+site <- "http://www.stat.berkeley.edu/users/statlabs/data/babies.data"
+BABIES <- read.table(file=url(site), header=TRUE)
+attach(BABIES)
+head(BABIES)
 #
 # a
 CLEAN <- BABIES[bwt != 999 & gestation != 999 & parity != 9 & height != 99 & weight != 999 & smoke != 9,]
@@ -328,5 +328,3 @@ xyplot(log(total.cars)~log(death.rate), panel=function(x, y){
 lm(log(death.rate)~log(total.cars))
 # y = mx + b
 (-1.050^-1)*9.863948+(-1.883)
-
-# ask about 8
